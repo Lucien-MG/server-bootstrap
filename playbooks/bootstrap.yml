@@ -1,0 +1,20 @@
+---
+- name: Server Bootstrap
+  hosts: all
+
+  # gather machine informations
+  gather_facts: yes
+
+  # Enable root previlegies
+  become: no
+
+  # Run suitable scripts
+  tasks:
+
+  - name: Os Family
+    debug:
+      msg:
+        - Operating System{{':'}} {{ ansible_os_family }}
+
+- name: Containers
+  import_playbook: containers/bootstrap.yml

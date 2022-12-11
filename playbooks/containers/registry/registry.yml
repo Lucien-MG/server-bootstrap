@@ -1,0 +1,42 @@
+---
+- name: Jupyter
+  hosts: all
+
+  # gather machine informations
+  gather_facts: no
+
+  # Enable root previlegies
+  become: no
+
+  vars:
+    app_name: Jupyter
+    app_image: docker.io/jupyter/minimal-notebook
+    app_port: 9090
+    timezone: Europe/Paris
+
+  # Run suitable scripts
+  tasks:
+  
+    - name: Create {{ app_name }} Data Directory
+      file:
+        path: /home/{{ansible_user}}/{{app_name}}
+        state: directory
+        mode: '0755'
+
+    - name: Pull {{ app_name }} Image
+      containers.podman.podman_image:
+        name: "{{ app_image }}"
+        state: present
+
+    - name: Create "{{app_name}}" Container
+      containers.podman.podman_container:
+        name: "{{ app_name }}"
+        image: "{{ app_image }}"
+        state: started
+        recreate: yes
+        ports:
+          - "{{ app_port }}:8888"
+        expose:
+          - "{{ app_port }}"
+        #volumes:
+        #  - /home/{{ansible_user}}/{{app_name}}:/home/jovyan

@@ -1,0 +1,17 @@
+---
+- name: Podman
+  hosts: all
+
+  # gather machine informations
+  gather_facts: no
+
+  # Enable root previlegies
+  become: yes
+
+  # Run suitable scripts
+  tasks:
+
+  - name: Install Podman
+    package:
+      name: podman
+      state: latest
